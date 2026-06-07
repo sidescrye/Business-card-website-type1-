@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONO — Магазин одежды</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', 'Helvetica', sans-serif;
+    }
+
+    :root {
+        --black: #0a0a0a;
+        --white: #f5f5f5;
+        --gray: #888;
+        --dark-gray: #1a1a1a;
+    }
+
+    body {
+        background: var(--black);
+        color: var(--white);
+        overflow-x: hidden;
+    }
+
+    /* Фоновая анимация линий */
+    #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    /* Шапка */
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(12px);
+        background: rgba(10, 10, 10, 0.7);
+        border-bottom: 1px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 5%;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: 6px;
+        color: var(--white);
+    }
+
+    .logo span {
+        color: var(--gray);
+    }
+
+    nav a {
+        color: var(--white);
+        text-decoration: none;
+        margin-left: 30px;
+        font-size: 14px;
+        letter-spacing: 1px;
+        transition: color 0.3s;
+        text-transform: uppercase;
+    }
+
+    nav a:hover {
+        color: var(--gray);
+    }
+
+    /* Hero */
+    .hero {
+        text-align: center;
+        padding: 120px 5% 80px;
+    }
+
+    .hero h1 {
+        font-size: clamp(40px, 8vw, 90px);
+        font-weight: 900;
+        letter-spacing: 8px;
+        margin-bottom: 20px;
+        background: linear-gradient(90deg, #fff, #555, #fff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+        to { background-position: 200% center; }
+    }
+
+    .hero p {
+        color: var(--gray);
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-bottom: 40px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 16px 50px;
+        background: var(--white);
+        color: var(--black);
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border: 1px solid var(--white);
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background: transparent;
+        color: var(--white);
+    }
+
+    /* Товары */
+    .products {
+        padding: 60px 5% 100px;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 36px;
+        font-weight: 900;
+        letter-spacing: 4px;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+    }
+
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: var(--gray);
+        margin: 15px auto 0;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 30px;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background: var(--dark-gray);
+        border: 1px solid #2a2a2a;
+        overflow: hidden;
+        transition: transform 0.4s, border-color 0.4s;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        border-color: var(--gray);
+    }
+
+    .card-img {
+        height: 320px;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s;
+    }
+
+    .card:hover .card-img img {
+        transform: scale(1.07);
+    }
+
+    .card-info {
+        padding: 20px;
+    }
+
+    .card-info h3 {
+        font-size: 16px;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .card-info .brand {
+        color: var(--gray);
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .card-info .price {
+        font-size: 22px;
+        font-weight: 900;
+        margin-bottom: 15px;
+    }
+
+    .buy-btn {
+        width: 100%;
+        padding: 12px;
+        background: var(--white);
+        color: var(--black);
+        border: none;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background 0.3s;
+    }
+
+    .buy-btn:hover {
+        background: var(--gray);
+    }
+
+    /* Обратная связь */
+    .contact {
+        padding: 80px 5%;
+        text-align: center;
+        border-top: 1px solid #2a2a2a;
+    }
+
+    .contact h2 {
+        font-size: 32px;
+        letter-spacing: 3px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .contact p {
+        color: var(--gray);
+        margin-bottom: 30px;
+    }
+
+    .tg-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 40px;
+        background: transparent;
+        border: 2px solid var(--white);
+        color: var(--white);
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+    }
+
+    .tg-btn:hover {
+        background: var(--white);
+        color: var(--black);
+    }
+
+    footer {
+        text-align: center;
+        padding: 30px;
+        color: var(--gray);
+        font-size: 13px;
+        border-top: 1px solid #2a2a2a;
+    }
+
+    /* Чат поддержки */
+    .chat-toggle {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--white);
+        color: var(--black);
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+        z-index: 200;
+        box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+        transition: transform 0.3s;
+    }
+
+    .chat-toggle:hover {
+        transform: scale(1.1);
+    }
+
+    .chat-box {
+        position: fixed;
+        bottom: 100px;
+        right: 25px;
+        width: 340px;
+        max-width: 90vw;
+        height: 460px;
+        background: var(--dark-gray);
+        border: 1px solid #333;
+        border-radius: 12px;
+        z-index: 200;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+
+    .chat-box.open {
+        display: flex;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-header {
+        background: var(--black);
+        padding: 16px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-header span {
+        font-size: 12px;
+        color: #4caf50;
+        font-weight: 400;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .msg {
+        max-width: 80%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .msg.bot {
+        background: #2a2a2a;
+        align-self: flex-start;
+        border-bottom-left-radius: 2px;
+    }
+
+    .msg.user {
+        background: var(--white);
+        color: var(--black);
+        align-self: flex-end;
+        border-bottom-right-radius: 2px;
+    }
+
+    .chat-input {
+        display: flex;
+        border-top: 1px solid #333;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 14px;
+        background: var(--black);
+        border: none;
+        color: var(--white);
+        outline: none;
+        font-size: 14px;
+    }
+
+    .chat-input button {
+        padding: 0 20px;
+        background: var(--white);
+        color: var(--black);
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+        nav { display: none; }
+        .card-img { height: 260px; }
+    }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header>
+    <div class="logo">MO<span>NO</span></div>
+    <nav>
+        <a href="#catalog">Каталог</a>
+        <a href="#contact">Контакты</a>
+        <a href="https://t.me/sidescrye" target="_blank">Telegram</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>MONO STORE</h1>
+    <p>Минимализм. Стиль. Качество.</p>
+    <a href="#catalog" class="btn">Смотреть каталог</a>
+</section>
+
+<section class="products" id="catalog">
+    <h2 class="section-title">Каталог</h2>
+    <div class="grid">
+
+        <div class="card">
+            <div class="card-img">
+                <img src="cofta.png" alt="EA7 Лонгслив" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:%23000;font-weight:900>EA7</div>'">
+            </div>
+            <div class="card-info">
+                <h3>Лонгслив EA7</h3>
+                <div class="brand">Emporio Armani</div>
+                <div class="price">7 990 ₽</div>
+                <button class="buy-btn" onclick="buy('Лонгслив EA7')">В корзину</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-img">
+                <img src="cros.png" alt="Кроссовки" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:%23000;font-weight:900>SNEAKERS</div>'">
+            </div>
+            <div class="card-info">
+                <h3>Кроссовки NS1</h3>
+                <div class="brand">Premium Sport</div>
+                <div class="price">12 490 ₽</div>
+                <button class="buy-btn" onclick="buy('Кроссовки NS1')">В корзину</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-img">
+                <img src="bruk.png" alt="Брюки чёрные" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:%23000;font-weight:900>PANTS</div>'">
+            </div>
+            <div class="card-info">
+                <h3>Брюки свободные</h3>
+                <div class="brand">Black Edition</div>
+                <div class="price">9 290 ₽</div>
+                <button class="buy-btn" onclick="buy('Брюки свободные')">В корзину</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-img">
+                <img src="sry.png" alt="Брюки серые" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=color:%23000;font-weight:900>TROUSERS</div>'">
+            </div>
+            <div class="card-info">
+                <h3>Брюки классические</h3>
+                <div class="brand">Grey Collection</div>
+                <div class="price">10 990 ₽</div>
+                <button class="buy-btn" onclick="buy('Брюки классические')">В корзину</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="contact" id="contact">
+    <h2>Обратная связь</h2>
+    <p>Есть вопрос или хотите оформить заказ? Напишите нам в Telegram!</p>
+    <a href="https://t.me/sidescrye" target="_blank" class="tg-btn">
+        ✈ @sidescrye
+    </a>
+</section>
+
+<footer>
+    © 2024 MONO STORE — Все права защищены
+</footer>
+
+<!-- Чат поддержки -->
+<button class="chat-toggle" onclick="toggleChat()">💬</button>
+<div class="chat-box" id="chatBox">
+    <div class="chat-header">
+        Тех-поддержка
+        <span>● онлайн</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">Здравствуйте! 👋 Чем можем помочь?</div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Введите сообщение..." onkeypress="if(event.key==='Enter')sendMsg()">
+        <button onclick="sendMsg()">➤</button>
+    </div>
+</div>
+
+<script>
+// ===== Анимация фоновых линий =====
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, points = [];
+
+function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const NUM = 70;
+for (let i = 0; i < NUM; i++) {
+    points.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < points.length; i++) {
+        let p = points[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180,180,180,0.6)';
+        ctx.fill();
+
+        for (let j = i + 1; j < points.length; j++) {
+            let q = points[j];
+            let dist = Math.hypot(p.x - q.x, p.y - q.y);
+            if (dist < 130) {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.strokeStyle = 'rgba(120,120,120,' + (1 - dist / 130) * 0.4 + ')';
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(animate);
+}
+animate();
+
+// ===== Корзина =====
+function buy(name) {
+    window.open('https://t.me/sidescrye?text=' + encodeURIComponent('Здравствуйте! Хочу заказать: ' + name), '_blank');
+}
+
+// ===== Чат =====
+function toggleChat() {
+    document.getElementById('chatBox').classList.toggle('open');
+}
+
+function sendMsg() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const box = document.getElementById('chatMessages');
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.textContent = text;
+    box.appendChild(userMsg);
+
+    input.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg bot';
+        botMsg.innerHTML = 'Спасибо за обращение! Для быстрого ответа напишите нам в Telegram: <a href="https://t.me/sidescrye" target="_blank" style="color:#fff;text-decoration:underline">@sidescrye</a>';
+        box.appendChild(botMsg);
+        box.scrollTop = box.scrollHeight;
+    }, 800);
+}
+</script>
+
+</body>
+</html>
